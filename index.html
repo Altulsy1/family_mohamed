@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="نظام إدارة شجرة عائلة محمد عبدالرحمن - نظام متكامل لإدارة وتسجيل شجرة العائلة">
+    <meta name="author" content="محمد عمر محمد">
+    <meta name="keywords" content="شجرة العائلة، عائلة، محمد عبدالرحمن، نظام إدارة">
+    <title>شجرة عائلة محمد عبدالرحمن</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+    
+    <!-- مكتبات CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/tree.css">
+    <link rel="stylesheet" href="css/family-book.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- مكتبات JavaScript -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- شاشة الدخول -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <h1>نظام إدارة شجرة العائلة</h1>
+                <p>شجرة عائلة محمد عبدالرحمن (أبا)</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> اسم المستخدم
+                    </label>
+                    <input type="text" id="username" placeholder="أدخل اسم المستخدم" required class="form-control">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> كلمة المرور
+                    </label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" required class="form-control">
+                </div>
+                
+                <div id="login-error" class="error-message" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>اسم المستخدم أو كلمة المرور غير صحيحة</span>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                
+                <div class="login-footer">
+                    <p><i class="fas fa-info-circle"></i> 🌲 شجرة عائلة | محمد عبدالرحمن ادم</p>
+                    <p>إعداد وتنفيذ: محمد عمر محمد</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- الواجهة الرئيسية -->
+    <div id="main-app" class="main-app" style="display:none">
+        <!-- شريط التنقل العلوي -->
+        <header class="top-bar">
+            <nav class="nav-container">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="logo">
+                    <i class="fas fa-tree"></i>
+                    <h1>شجرة عائلة محمد عبدالرحمن</h1>
+                </div>
+                
+                <div class="user-info">
+                    <span id="currentDate"></span>
+                    <span id="userName">مدير النظام</span>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> خروج
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- القائمة الجانبية -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-bars"></i> القائمة الرئيسية</h3>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>لوحة التحكم</span>
+                </li>
+                <li class="menu-item" data-page="persons">
+                    <i class="fas fa-users"></i>
+                    <span>إدارة الأفراد</span>
+                </li>
+                <li class="menu-item" data-page="add-person">
+                    <i class="fas fa-user-plus"></i>
+                    <span>إضافة فرد جديد</span>
+                </li>
+                <li class="menu-item" data-page="tree">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>عرض الشجرة</span>
+                </li>
+                <li class="menu-item" data-page="map">
+                    <i class="fas fa-map"></i>
+                    <span>الخريطة العائلية</span>
+                </li>
+                <li class="menu-item" data-page="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>التقارير والإحصاءات</span>
+                </li>
+                <li class="menu-item" data-page="family-book">
+                    <i class="fas fa-book"></i>
+                    <span>كتاب العائلة</span>
+                </li>
+                <li class="menu-item" data-page="backup">
+                    <i class="fas fa-database"></i>
+                    <span>النسخ الاحتياطي</span>
+                </li>
+                <li class="menu-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>الإعدادات</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <p>الإصدار 2.0.0</p>
+            </div>
+        </aside>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content" id="mainContent">
+            <!-- صفحات المحتوى سيتم تحميلها هنا -->
+            <section id="dashboardPage" class="page active">
+                <h3><i class="fas fa-home"></i> لوحة التحكم</h3>
+                <p>مرحبًا بك في نظام إدارة شجرة العائلة</p>
+            </section>
+            
+            <section id="personsPage" class="page">
+                <h3><i class="fas fa-users"></i> إدارة الأفراد</h3>
+                <div class="persons-container" id="personsContainer"></div>
+            </section>
+            
+            <section id="treePage" class="page">
+                <h3><i class="fas fa-project-diagram"></i> عرض الشجرة</h3>
+                <div class="tree-container" id="treeContainer"></div>
+            </section>
+            
+            <!-- ستبقى الصفحات الأخرى مخفية حتى يتم تطويرها -->
+            <section id="addPersonPage" class="page" style="display:none">
+                <h3><i class="fas fa-user-plus"></i> إضافة فرد جديد</h3>
+                <!-- سيتم إضافة النموذج هنا -->
+            </section>
+            
+            <section id="mapPage" class="page" style="display:none">
+                <h3><i class="fas fa-map"></i> الخريطة العائلية</h3>
+                <!-- سيتم إضافة الخريطة هنا -->
+            </section>
+            
+            <section id="reportsPage" class="page" style="display:none">
+                <h3><i class="fas fa-chart-bar"></i> التقارير والإحصاءات</h3>
+                <!-- سيتم إضافة التقارير هنا -->
+            </section>
+            
+            <section id="familyBookPage" class="page" style="display:none">
+                <h3><i class="fas fa-book"></i> كتاب العائلة</h3>
+                <!-- سيتم إضافة كتاب العائلة هنا -->
+            </section>
+            
+            <section id="backupPage" class="page" style="display:none">
+                <h3><i class="fas fa-database"></i> النسخ الاحتياطي</h3>
+                <!-- سيتم إضافة أدوات النسخ الاحتياطي هنا -->
+            </section>
+            
+            <section id="settingsPage" class="page" style="display:none">
+                <h3><i class="fas fa-cog"></i> الإعدادات</h3>
+                <!-- سيتم إضافة الإعدادات هنا -->
+            </section>
+        </main>
+
+        <!-- زر عرض الشجرة -->
+        <button class="floating-btn" id="treeViewBtn">
+            <i class="fas fa-tree"></i>
+        </button>
+
+        <!-- نافذة الرسائل -->
+        <div class="notifications-container" id="notificationsContainer"></div>
+    </div>
+
+    <!-- نموذج إضافة/تعديل فرد -->
+    <div class="modal" id="personModal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">إضافة فرد جديد</h3>
+                <button class="close-btn" id="closeModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="personForm">
+                    <input type="hidden" id="personId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">الاسم الكامل *</label>
+                            <input type="text" id="fullName" required class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gender">الجنس *</label>
+                            <select id="gender" required class="form-control">
+                                <option value="">اختر الجنس</option>
+                                <option value="ذكر">ذكر</option>
+                                <option value="انثى">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="birthPlace">مكان الميلاد</label>
+                            <input type="text" id="birthPlace" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="birthDate">تاريخ الميلاد</label>
+                            <input type="date" id="birthDate" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fatherId">الأب</label>
+                            <select id="fatherId" class="form-control">
+                                <option value="0">اختر الأب</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="motherId">الأم</label>
+                            <select id="motherId" class="form-control">
+                                <option value="0">اختر الأم</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="spouseId">الزوج/الزوجة</label>
+                            <select id="spouseId" class="form-control">
+                                <option value="0">اختر الزوج/الزوجة</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="deathDate">تاريخ الوفاة</label>
+                            <input type="date" id="deathDate" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">ملاحظات</label>
+                        <textarea id="notes" rows="3" class="form-control"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج البحث -->
+    <div class="modal" id="searchModal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>بحث في الأفراد</h3>
+                <button class="close-btn" id="closeSearchModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="searchKeyword">كلمة البحث</label>
+                    <input type="text" id="searchKeyword" placeholder="ابحث بالاسم أو مكان الميلاد..." class="form-control">
+                </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد -->
+    <div class="modal" id="confirmModal" style="display:none">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3 id="confirmTitle">تأكيد الإجراء</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirmCancel">لا</button>
+                <button class="btn btn-danger" id="confirmOk">نعم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شاشة تحميل -->
+    <div class="loading-screen" id="loadingScreen" style="display:none">
+        <div class="loading-content">
+            <div class="spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <p id="loadingText">جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- تحميل ملفات JavaScript بالترتيب الصحيح -->
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/family-data.js"></script>
+    <script src="js/family-book.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/backup.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/tree-view.js"></script>
+    <script src="js/family-map.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
